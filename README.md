@@ -1,66 +1,195 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Sentinel Logs
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel application demonstrating advanced authentication logging and security features using the `harryes/laravel-sentinellog` package.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Authentication event logging (login, logout, failed attempts)
+- Device tracking and management
+- Geolocation tracking for login attempts
+- Suspicious activity notifications
+- Two-Factor Authentication (2FA) support
+- Session management and monitoring
+- Brute force protection
+- Geo-fencing capabilities
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP ^8.2
+- Laravel ^12.0
+- Composer
+- MySQL/PostgreSQL database
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Clone the repository:
+```bash
+git clone <your-repository-url>
+cd sentinel-test
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. Install dependencies:
+```bash
+composer install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. Create and configure your environment file:
+```bash
+cp .env.example .env
+```
 
-## Laravel Sponsors
+4. Generate application key:
+```bash
+php artisan key:generate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+5. Configure your database in `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-### Premium Partners
+6. Run migrations:
+```bash
+php artisan migrate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+7. Configure Sentinel Log in your `.env`:
+```env
+SENTINEL_LOG_ENABLED=true
+SENTINEL_LOG_NOTIFICATIONS_ENABLED=true
+SENTINEL_LOG_2FA_ENABLED=true
+```
+
+## Configuration
+
+### Basic Configuration
+
+The sentinel log configuration can be published and modified:
+
+```bash
+php artisan vendor:publish --tag=sentinel-log-config
+```
+
+This will create a `config/sentinel-log.php` file where you can customize:
+
+- Logging settings
+- Notification preferences
+- Security thresholds
+- Geo-fencing rules
+- Device tracking options
+
+### Two-Factor Authentication
+
+To enable 2FA support:
+
+1. Ensure your User model implements the necessary trait:
+
+```php
+use Harryes\SentinelLog\Traits\HasTwoFactorAuth;
+
+class User extends Authenticatable
+{
+    use HasTwoFactorAuth;
+    // ...
+}
+```
+
+2. Add the 2FA middleware to routes requiring additional security:
+
+```php
+Route::middleware(['auth', 'sentinel.2fa'])->group(function () {
+    // Protected routes
+});
+```
+
+### Notifications
+
+The package sends notifications for:
+- New device logins
+- Suspicious login attempts
+- Failed authentication attempts
+- Geolocation changes
+
+Configure notification channels in `config/sentinel-log.php`:
+
+```php
+'notifications' => [
+    'channels' => ['mail', 'database'],
+    'notify_on_new_device' => true,
+    'notify_on_suspicious_activity' => true,
+]
+```
+
+## Usage
+
+### Viewing Authentication Logs
+
+Access authentication logs through the provided methods:
+
+```php
+// In your controller
+use Harryes\SentinelLog\Facades\SentinelLog;
+
+public function viewLogs()
+{
+    $logs = SentinelLog::getAuthenticationLogs();
+    return view('logs.index', compact('logs'));
+}
+```
+
+### Managing Devices
+
+Track and manage authenticated devices:
+
+```php
+// Get user's devices
+$devices = auth()->user()->devices;
+
+// Revoke access from a device
+SentinelLog::revokeDevice($deviceId);
+```
+
+### Security Events
+
+Listen for security events:
+
+```php
+use Harryes\SentinelLog\Events\SuspiciousLoginAttempt;
+
+Event::listen(SuspiciousLoginAttempt::class, function ($event) {
+    // Handle suspicious login
+});
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
+php artisan test
+```
+
+## Security
+
+If you discover any security-related issues, please email security@yourdomain.com instead of using the issue tracker.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, please email support@yourdomain.com or create an issue in the repository.
