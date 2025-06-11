@@ -125,67 +125,6 @@ Configure notification channels in `config/sentinel-log.php`:
 ]
 ```
 
-## Usage
-
-### Viewing Authentication Logs
-
-Access authentication logs through the provided methods:
-
-```php
-// In your controller
-use Harryes\SentinelLog\Facades\SentinelLog;
-
-public function viewLogs()
-{
-    $logs = SentinelLog::getAuthenticationLogs();
-    return view('logs.index', compact('logs'));
-}
-```
-
-### Managing Devices
-
-Track and manage authenticated devices:
-
-```php
-// Get user's devices
-$devices = auth()->user()->devices;
-
-// Revoke access from a device
-SentinelLog::revokeDevice($deviceId);
-```
-
-### Security Events
-
-Listen for security events:
-
-```php
-use Harryes\SentinelLog\Events\SuspiciousLoginAttempt;
-
-Event::listen(SuspiciousLoginAttempt::class, function ($event) {
-    // Handle suspicious login
-});
-```
-
-## Testing
-
-Run the test suite:
-
-```bash
-php artisan test
-```
-
-## Security
-
-If you discover any security-related issues, please email security@yourdomain.com instead of using the issue tracker.
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
