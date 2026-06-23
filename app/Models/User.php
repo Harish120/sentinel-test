@@ -2,45 +2,32 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use DateTimeInterface;
+use Harryes\SentinelLog\Contracts\NotifiableWithFailedAttempt;
+use Harryes\SentinelLog\Contracts\TwoFactorAuthenticatable;
 use Harryes\SentinelLog\Traits\NotifiesAuthenticationEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements TwoFactorAuthenticatable, NotifiableWithFailedAttempt
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use NotifiesAuthenticationEvents,HasFactory, Notifiable;
+    use NotifiesAuthenticationEvents, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
         'two_factor_secret',
-        'two_factor_enabled_at'
+        'two_factor_enabled_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -49,5 +36,15 @@ class User extends Authenticatable
             'two_factor_secret'     => 'encrypted',
             'two_factor_enabled_at' => 'datetime',
         ];
+    }
+
+    public function getTwoFactorSecret(): ?string
+    {
+        return $this->two_factor_secret;
+    }
+
+    public function getTwoFactorEnabledAt(): ?DateTimeInterface
+    {
+        return $this->two_factor_enabled_at;
     }
 }

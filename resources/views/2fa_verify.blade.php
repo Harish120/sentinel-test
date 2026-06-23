@@ -6,7 +6,7 @@
     <div class="card p-4">
         <h2 class="text-center mb-4">Two-Factor Authentication</h2>
         <p class="text-center">Enter the code from your authenticator app.</p>
-        <form method="POST" action="/2fa/verify">
+        <form method="POST" action="{{ route('two-factor.verify') }}">
             @csrf
             <div class="mb-3">
                 <label for="code" class="form-label">2FA Code</label>
