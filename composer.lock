@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da183f127012abfb13f6eb1a241c0f45",
+    "content-hash": "bbe7db7da84c48f810fa7361387d2e87",
     "packages": [
         {
             "name": "brick/math",
@@ -1060,16 +1060,16 @@
         },
         {
             "name": "harryes/laravel-sentinellog",
-            "version": "v0.2.0",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Harish120/laravel-sentinellog.git",
-                "reference": "44c9bef6cdf63a3ef15815efb4b7da905d28d565"
+                "reference": "34781ec02cefce3eb98141e2fbb0000f5edaf19d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Harish120/laravel-sentinellog/zipball/44c9bef6cdf63a3ef15815efb4b7da905d28d565",
-                "reference": "44c9bef6cdf63a3ef15815efb4b7da905d28d565",
+                "url": "https://api.github.com/repos/Harish120/laravel-sentinellog/zipball/34781ec02cefce3eb98141e2fbb0000f5edaf19d",
+                "reference": "34781ec02cefce3eb98141e2fbb0000f5edaf19d",
                 "shasum": ""
             },
             "require": {
@@ -1124,9 +1124,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Harish120/laravel-sentinellog/issues",
-                "source": "https://github.com/Harish120/laravel-sentinellog/tree/v0.2.0"
+                "source": "https://github.com/Harish120/laravel-sentinellog/tree/v0.2.1"
             },
-            "time": "2026-06-23T09:42:05+00:00"
+            "time": "2026-06-23T11:27:37+00:00"
         },
         {
             "name": "laravel/framework",
