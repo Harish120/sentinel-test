@@ -8,8 +8,8 @@
         @if($errors->has('email') || $errors->has('geo'))
             <div class="alert alert-danger text-center">
                 {{ $errors->first('email') ?: $errors->first('geo') }}
-                @if(app('sentinel.brute_force')->getAttempts(request()->ip()) > 0)
-                    <br>Attempts remaining: {{ config('sentinel-log.brute_force.threshold', 5) - app('sentinel.brute_force')->getAttempts(request()->ip()) }}
+                @if($attempts > 0)
+                    <br>Attempts remaining: {{ $threshold - $attempts }}
                 @endif
             </div>
         @endif

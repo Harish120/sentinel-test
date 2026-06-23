@@ -21,7 +21,13 @@ Route::get('/changelog', fn () => view('changelog'))->name('changelog');
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', fn () => view('login'))->name('login');
+Route::get('/login', function () {
+    $threshold = (int) config('sentinel-log.brute_force.threshold', 5);
+    $attempts  = app(\Harryes\SentinelLog\Services\BruteForceProtectionService::class)
+                     ->getAttempts(request()->ip());
+
+    return view('login', compact('threshold', 'attempts'));
+})->name('login');
 
 Route::post('/login', function () {
     if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
