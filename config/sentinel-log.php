@@ -41,18 +41,18 @@ return [
     'notifications' => [
         'new_device' => [
             'enabled'   => env('SENTINEL_LOG_NOTIFY_NEW_DEVICE', true),
-            'channels'  => ['mail'],
+            'channels'  => ['mail', 'slack', 'discord', 'teams', 'telegram', 'webhook'],
             'threshold' => 1,
         ],
         'failed_attempt' => [
             'enabled'   => env('SENTINEL_LOG_NOTIFY_FAILED_ATTEMPT', true),
-            'channels'  => ['mail'],
+            'channels'  => ['mail', 'slack', 'discord', 'teams', 'telegram', 'webhook'],
             'threshold' => 3,
             'window'    => 60,
         ],
         'session_hijacking' => [
             'enabled'  => env('SENTINEL_LOG_NOTIFY_HIJACKING', true),
-            'channels' => ['mail'],
+            'channels' => ['mail', 'slack', 'discord', 'teams', 'telegram', 'webhook'],
         ],
     ],
 
@@ -140,10 +140,42 @@ return [
     */
     'location_verification' => [
         'enabled'               => env('SENTINEL_LOG_LOCATION_VERIFICATION_ENABLED', true),
-        'channels'              => ['mail'],
+        'channels'              => ['mail', 'slack', 'discord', 'teams', 'telegram', 'webhook'],
         'token_ttl'             => 30,
         'redirect_after_verify' => '/',
         'redirect_after_deny'   => '/',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Optional Chat Channels (new in v1.1.0)
+    |--------------------------------------------------------------------------
+    | Add 'slack', 'discord', 'teams', 'telegram', or 'webhook' to any of the
+    | channels arrays above to also send that alert to these destinations.
+    |--------------------------------------------------------------------------
+    */
+    'channels' => [
+        'slack' => [
+            'webhook_url' => env('SENTINEL_LOG_SLACK_WEBHOOK_URL'),
+            'timeout'     => env('SENTINEL_LOG_SLACK_TIMEOUT', 3),
+        ],
+        'discord' => [
+            'webhook_url' => env('SENTINEL_LOG_DISCORD_WEBHOOK_URL'),
+            'timeout'     => env('SENTINEL_LOG_DISCORD_TIMEOUT', 3),
+        ],
+        'teams' => [
+            'webhook_url' => env('SENTINEL_LOG_TEAMS_WEBHOOK_URL'),
+            'timeout'     => env('SENTINEL_LOG_TEAMS_TIMEOUT', 3),
+        ],
+        'telegram' => [
+            'bot_token' => env('SENTINEL_LOG_TELEGRAM_BOT_TOKEN'),
+            'chat_id'   => env('SENTINEL_LOG_TELEGRAM_CHAT_ID'),
+            'timeout'   => env('SENTINEL_LOG_TELEGRAM_TIMEOUT', 3),
+        ],
+        'webhook' => [
+            'webhook_url' => env('SENTINEL_LOG_WEBHOOK_URL'),
+            'timeout'     => env('SENTINEL_LOG_WEBHOOK_TIMEOUT', 3),
+        ],
     ],
 
 ];
